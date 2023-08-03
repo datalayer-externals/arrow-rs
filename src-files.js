@@ -5,7 +5,7 @@ var srcIndex = JSON.parse('{\
 "arrow_buffer":["",[["alloc",[],["alignment.rs","mod.rs"]],["buffer",[],["boolean.rs","immutable.rs","mod.rs","mutable.rs","null.rs","offset.rs","ops.rs","run.rs","scalar.rs"]],["builder",[],["boolean.rs","mod.rs","null.rs"]],["util",[],["bit_chunk_iterator.rs","bit_iterator.rs","bit_mask.rs","bit_util.rs","mod.rs"]]],["bigint.rs","bytes.rs","lib.rs","native.rs"]],\
 "arrow_cast":["",[],["cast.rs","display.rs","lib.rs","parse.rs","pretty.rs"]],\
 "arrow_csv":["",[["reader",[],["mod.rs","records.rs"]]],["lib.rs","writer.rs"]],\
-"arrow_data":["",[["data",[],["buffers.rs","mod.rs"]],["equal",[],["boolean.rs","dictionary.rs","fixed_binary.rs","fixed_list.rs","list.rs","mod.rs","null.rs","primitive.rs","run.rs","structure.rs","union.rs","utils.rs","variable_size.rs"]],["transform",[],["boolean.rs","fixed_binary.rs","fixed_size_list.rs","list.rs","mod.rs","null.rs","primitive.rs","structure.rs","union.rs","utils.rs","variable_size.rs"]]],["decimal.rs","ffi.rs","lib.rs"]],\
+"arrow_data":["",[["equal",[],["boolean.rs","dictionary.rs","fixed_binary.rs","fixed_list.rs","list.rs","mod.rs","null.rs","primitive.rs","run.rs","structure.rs","union.rs","utils.rs","variable_size.rs"]],["transform",[],["boolean.rs","fixed_binary.rs","fixed_size_list.rs","list.rs","mod.rs","null.rs","primitive.rs","structure.rs","union.rs","utils.rs","variable_size.rs"]]],["data.rs","decimal.rs","ffi.rs","lib.rs"]],\
 "arrow_file_to_stream":["",[],["arrow-file-to-stream.rs"]],\
 "arrow_flight":["",[["sql",[["metadata",[],["catalogs.rs","db_schemas.rs","mod.rs","sql_info.rs","tables.rs","xdbc_info.rs"]]],["arrow.flight.protocol.sql.rs","client.rs","mod.rs","server.rs"]]],["arrow.flight.protocol.rs","client.rs","decode.rs","encode.rs","error.rs","lib.rs","utils.rs"]],\
 "arrow_integration_test":["",[],["datatype.rs","field.rs","lib.rs","schema.rs"]],\
@@ -13,7 +13,7 @@ var srcIndex = JSON.parse('{\
 "arrow_ipc":["",[["gen",[],["File.rs","Message.rs","Schema.rs","SparseTensor.rs","Tensor.rs","mod.rs"]]],["compression.rs","convert.rs","lib.rs","reader.rs","writer.rs"]],\
 "arrow_json":["",[["reader",[],["boolean_array.rs","decimal_array.rs","list_array.rs","map_array.rs","mod.rs","null_array.rs","primitive_array.rs","schema.rs","serializer.rs","string_array.rs","struct_array.rs","tape.rs","timestamp_array.rs"]]],["lib.rs","writer.rs"]],\
 "arrow_json_integration_test":["",[],["arrow-json-integration-test.rs"]],\
-"arrow_ord":["",[],["comparison.rs","lib.rs","ord.rs","partition.rs","sort.rs"]],\
+"arrow_ord":["",[],["comparison.rs","lib.rs","ord.rs","partition.rs","rank.rs","sort.rs"]],\
 "arrow_row":["",[],["dictionary.rs","fixed.rs","interner.rs","lib.rs","list.rs","variable.rs"]],\
 "arrow_schema":["",[],["datatype.rs","error.rs","ffi.rs","field.rs","fields.rs","lib.rs","schema.rs"]],\
 "arrow_select":["",[],["concat.rs","filter.rs","interleave.rs","lib.rs","nullif.rs","take.rs","window.rs","zip.rs"]],\
