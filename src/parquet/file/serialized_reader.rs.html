@@ -1758,7 +1758,6 @@
 <a href="#1758" id="1758">1758</a>
 <a href="#1759" id="1759">1759</a>
 <a href="#1760" id="1760">1760</a>
-<a href="#1761" id="1761">1761</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2003,11 +2002,6 @@
             })
         }
     }
-
-    <span class="attr">#[cfg(feature = <span class="string">&quot;arrow&quot;</span>)]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>metadata_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Arc&lt;ParquetMetaData&gt; {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.metadata
-    }
 }
 
 <span class="doccomment">/// Get midpoint offset for a row group
@@ -2203,8 +2197,10 @@
 
     <span class="kw">let </span>result = <span class="kw">match </span>page_header.type_ {
         PageType::DICTIONARY_PAGE =&gt; {
-            <span class="macro">assert!</span>(page_header.dictionary_page_header.is_some());
-            <span class="kw">let </span>dict_header = page_header.dictionary_page_header.as_ref().unwrap();
+            <span class="kw">let </span>dict_header =
+                page_header.dictionary_page_header.as_ref().ok_or_else(|| {
+                    ParquetError::General(<span class="string">&quot;Missing dictionary page header&quot;</span>.to_string())
+                })<span class="question-mark">?</span>;
             <span class="kw">let </span>is_sorted = dict_header.is_sorted.unwrap_or(<span class="bool-val">false</span>);
             Page::DictionaryPage {
                 buf: buffer,
@@ -2214,8 +2210,9 @@
             }
         }
         PageType::DATA_PAGE =&gt; {
-            <span class="macro">assert!</span>(page_header.data_page_header.is_some());
-            <span class="kw">let </span>header = page_header.data_page_header.unwrap();
+            <span class="kw">let </span>header = page_header.data_page_header.ok_or_else(|| {
+                ParquetError::General(<span class="string">&quot;Missing V1 data page header&quot;</span>.to_string())
+            })<span class="question-mark">?</span>;
             Page::DataPage {
                 buf: buffer,
                 num_values: header.num_values <span class="kw">as </span>u32,
@@ -2226,8 +2223,9 @@
             }
         }
         PageType::DATA_PAGE_V2 =&gt; {
-            <span class="macro">assert!</span>(page_header.data_page_header_v2.is_some());
-            <span class="kw">let </span>header = page_header.data_page_header_v2.unwrap();
+            <span class="kw">let </span>header = page_header.data_page_header_v2.ok_or_else(|| {
+                ParquetError::General(<span class="string">&quot;Missing V2 data page header&quot;</span>.to_string())
+            })<span class="question-mark">?</span>;
             <span class="kw">let </span>is_compressed = header.is_compressed.unwrap_or(<span class="bool-val">true</span>);
             Page::DataPageV2 {
                 buf: buffer,
