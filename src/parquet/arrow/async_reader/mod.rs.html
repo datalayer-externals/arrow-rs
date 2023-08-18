@@ -1503,6 +1503,10 @@
 <a href="#1503" id="1503">1503</a>
 <a href="#1504" id="1504">1504</a>
 <a href="#1505" id="1505">1505</a>
+<a href="#1506" id="1506">1506</a>
+<a href="#1507" id="1507">1507</a>
+<a href="#1508" id="1508">1508</a>
+<a href="#1509" id="1509">1509</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2281,10 +2285,11 @@
     <span class="kw">use </span><span class="kw">crate</span>::file::footer::parse_metadata;
     <span class="kw">use </span><span class="kw">crate</span>::file::page_index::index_reader;
     <span class="kw">use </span><span class="kw">crate</span>::file::properties::WriterProperties;
+    <span class="kw">use </span>arrow::compute::kernels::cmp::eq;
     <span class="kw">use </span>arrow::error::Result <span class="kw">as </span>ArrowResult;
     <span class="kw">use </span>arrow_array::cast::AsArray;
     <span class="kw">use </span>arrow_array::types::Int32Type;
-    <span class="kw">use </span>arrow_array::{Array, ArrayRef, Int32Array, StringArray};
+    <span class="kw">use </span>arrow_array::{Array, ArrayRef, Int32Array, Int8Array, Scalar, StringArray};
     <span class="kw">use </span>futures::TryStreamExt;
     <span class="kw">use </span>rand::{thread_rng, Rng};
     <span class="kw">use </span>std::sync::Mutex;
@@ -2693,14 +2698,16 @@
         };
         <span class="kw">let </span>requests = test.requests.clone();
 
+        <span class="kw">let </span>a_scalar = StringArray::from_iter_values([<span class="string">&quot;b&quot;</span>]);
         <span class="kw">let </span>a_filter = ArrowPredicateFn::new(
             ProjectionMask::leaves(<span class="kw-2">&amp;</span>parquet_schema, <span class="macro">vec!</span>[<span class="number">0</span>]),
-            |batch| arrow::compute::eq_dyn_utf8_scalar(batch.column(<span class="number">0</span>), <span class="string">&quot;b&quot;</span>),
+            <span class="kw">move </span>|batch| eq(batch.column(<span class="number">0</span>), <span class="kw-2">&amp;</span>Scalar::new(<span class="kw-2">&amp;</span>a_scalar)),
         );
 
+        <span class="kw">let </span>b_scalar = StringArray::from_iter_values([<span class="string">&quot;4&quot;</span>]);
         <span class="kw">let </span>b_filter = ArrowPredicateFn::new(
             ProjectionMask::leaves(<span class="kw-2">&amp;</span>parquet_schema, <span class="macro">vec!</span>[<span class="number">1</span>]),
-            |batch| arrow::compute::eq_dyn_utf8_scalar(batch.column(<span class="number">0</span>), <span class="string">&quot;4&quot;</span>),
+            <span class="kw">move </span>|batch| eq(batch.column(<span class="number">0</span>), <span class="kw-2">&amp;</span>Scalar::new(<span class="kw-2">&amp;</span>b_scalar)),
         );
 
         <span class="kw">let </span>filter = RowFilter::new(<span class="macro">vec!</span>[Box::new(a_filter), Box::new(b_filter)]);
@@ -2858,12 +2865,13 @@
 
         <span class="kw">let </span>a_filter = ArrowPredicateFn::new(
             ProjectionMask::leaves(<span class="kw-2">&amp;</span>parquet_schema, <span class="macro">vec!</span>[<span class="number">1</span>]),
-            |batch| arrow::compute::eq_dyn_bool_scalar(batch.column(<span class="number">0</span>), <span class="bool-val">true</span>),
+            |batch| <span class="prelude-val">Ok</span>(batch.column(<span class="number">0</span>).as_boolean().clone()),
         );
 
+        <span class="kw">let </span>b_scalar = Int8Array::from(<span class="macro">vec!</span>[<span class="number">2</span>]);
         <span class="kw">let </span>b_filter = ArrowPredicateFn::new(
             ProjectionMask::leaves(<span class="kw-2">&amp;</span>parquet_schema, <span class="macro">vec!</span>[<span class="number">2</span>]),
-            |batch| arrow::compute::eq_dyn_scalar(batch.column(<span class="number">0</span>), <span class="number">2_i32</span>),
+            <span class="kw">move </span>|batch| eq(batch.column(<span class="number">0</span>), <span class="kw-2">&amp;</span>Scalar::new(<span class="kw-2">&amp;</span>b_scalar)),
         );
 
         <span class="kw">let </span>filter = RowFilter::new(<span class="macro">vec!</span>[Box::new(a_filter), Box::new(b_filter)]);

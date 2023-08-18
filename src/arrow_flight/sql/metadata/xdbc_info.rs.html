@@ -430,7 +430,6 @@
 <a href="#430" id="430">430</a>
 <a href="#431" id="431">431</a>
 <a href="#432" id="432">432</a>
-<a href="#433" id="433">433</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -460,9 +459,8 @@
 </span><span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>arrow_array::builder::{BooleanBuilder, Int32Builder, ListBuilder, StringBuilder};
-<span class="kw">use </span>arrow_array::cast::downcast_array;
-<span class="kw">use </span>arrow_array::{ArrayRef, Int32Array, ListArray, RecordBatch};
-<span class="kw">use </span>arrow_ord::comparison::eq_scalar;
+<span class="kw">use </span>arrow_array::{ArrayRef, Int32Array, ListArray, RecordBatch, Scalar};
+<span class="kw">use </span>arrow_ord::cmp::eq;
 <span class="kw">use </span>arrow_schema::{DataType, Field, Schema, SchemaRef};
 <span class="kw">use </span>arrow_select::filter::filter_record_batch;
 <span class="kw">use </span>arrow_select::take::take;
@@ -514,8 +512,8 @@
     /// from [`CommandGetXdbcTypeInfo`]
     </span><span class="kw">pub fn </span>record_batch(<span class="kw-2">&amp;</span><span class="self">self</span>, data_type: <span class="kw">impl </span>Into&lt;<span class="prelude-ty">Option</span>&lt;i32&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;RecordBatch&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(dt) = data_type.into() {
-            <span class="kw">let </span>arr: Int32Array = downcast_array(<span class="self">self</span>.batch.column(<span class="number">1</span>).as_ref());
-            <span class="kw">let </span>filter = eq_scalar(<span class="kw-2">&amp;</span>arr, dt)<span class="question-mark">?</span>;
+            <span class="kw">let </span>scalar = Int32Array::from(<span class="macro">vec!</span>[dt]);
+            <span class="kw">let </span>filter = eq(<span class="self">self</span>.batch.column(<span class="number">1</span>), <span class="kw-2">&amp;</span>Scalar::new(<span class="kw-2">&amp;</span>scalar))<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(filter_record_batch(<span class="kw-2">&amp;</span><span class="self">self</span>.batch, <span class="kw-2">&amp;</span>filter)<span class="question-mark">?</span>)
         } <span class="kw">else </span>{
             <span class="prelude-val">Ok</span>(<span class="self">self</span>.batch.clone())
